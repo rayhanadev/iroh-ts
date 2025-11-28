@@ -1,0 +1,36 @@
+
+[package]
+name = "iroh"
+version = "0.1.0"
+edition = "2021"
+authors = ["Rayhan Noufal Arayilakath <me@rayhanadev.com>"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+napi-derive = "3.0.0"
+iroh = "0.95.1"
+iroh-base = "0.95.1"
+bytes = "1.11.0"
+thiserror = "2.0.17"
+tracing = "0.1.41"
+
+[dependencies.napi]
+version = "3.0.0"
+features = ["async","tokio_rt"]
+
+[dependencies.tokio]
+version = "1.48.0"
+features = ["sync"]
+
+[dependencies.tracing-subscriber]
+version = "0.3.20"
+features = ["env-filter"]
+
+[build-dependencies]
+napi-build = "2"
+
+[profile.release]
+lto = true
+strip = "symbols"
