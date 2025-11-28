@@ -160,5 +160,14 @@ jobs:
       - name: List packages
         run: ls -R ./npm
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20.x
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Update npm
+        run: npm install -g npm@latest
+
       - name: Publish
         run: npm publish
