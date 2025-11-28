@@ -160,21 +160,5 @@ jobs:
       - name: List packages
         run: ls -R ./npm
 
-      - name: Publish (Trusted Publishers)
-        run: |
-          npm config set provenance=true
-
-          COMMIT_MSG="$(git log -1 --pretty=%B)"
-          VERSION_REGEX="^[0-9]+\.[0-9]+\.[0-9]+$"
-          NEXT_REGEX="^[0-9]+\.[0-9]+\.[0-9]+"
-
-          if echo "$COMMIT_MSG" | grep -qE "$VERSION_REGEX"; then
-            echo "Publishing stable release..."
-            npm publish --access public
-          elif echo "$COMMIT_MSG" | grep -qE "$NEXT_REGEX"; then
-            echo "Publishing prerelease with tag 'next'..."
-            npm publish --tag next --access public
-          else
-            echo "Not a release commit. Skipping publish."
-            exit 0
-          fi
+      - name: Publish
+        run: npm publish --access public
