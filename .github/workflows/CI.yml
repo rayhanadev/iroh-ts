@@ -135,6 +135,7 @@ jobs:
       id-token: write # required for trusted publishing
     needs:
       - lint
+      - build
 
     steps:
       - uses: actions/checkout@v6
