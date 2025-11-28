@@ -1,6 +1,6 @@
 {
   "name": "@rayhanadev/iroh",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "TypeScript/JavaScript bindings for iroh - peer-to-peer networking with QUIC",
   "main": "index.js",
   "types": "index.d.ts",
