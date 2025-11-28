@@ -136,7 +136,7 @@ impl Endpoint {
 
 /// Helper to convert hex string to bytes
 fn hex_to_bytes(hex: &str) -> std::result::Result<Vec<u8>, String> {
-    if hex.len() % 2 != 0 {
+    if !hex.len().is_multiple_of(2) {
         return Err("Hex string must have even length".to_string());
     }
     (0..hex.len())
