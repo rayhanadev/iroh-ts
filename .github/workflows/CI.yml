@@ -135,8 +135,6 @@ jobs:
       id-token: write # required for trusted publishing
     needs:
       - lint
-      - test-macOS-windows-binding
-      - test-linux-binding
 
     steps:
       - uses: actions/checkout@v6

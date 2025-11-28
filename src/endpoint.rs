@@ -96,7 +96,7 @@ impl Endpoint {
         // Parse the address as an EndpointId first (just the node ID)
         let endpoint_id: iroh::EndpointId = addr
             .parse()
-            .map_err(|e| to_napi_error(format!("Invalid node ID: {}", e)))?;
+            .map_err(|e| to_napi_error(format!("Invalid node ID: {e}")))?;
 
         let conn = self
             .inner
@@ -143,7 +143,7 @@ fn hex_to_bytes(hex: &str) -> std::result::Result<Vec<u8>, String> {
         .step_by(2)
         .map(|i| {
             u8::from_str_radix(&hex[i..i + 2], 16)
-                .map_err(|e| format!("Invalid hex at position {}: {}", i, e))
+                .map_err(|e| format!("Invalid hex at position {i}: {e}"))
         })
         .collect()
 }

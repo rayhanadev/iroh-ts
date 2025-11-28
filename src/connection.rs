@@ -82,7 +82,7 @@ impl Connection {
     #[napi]
     pub async fn closed(&self) -> Result<String> {
         let err = self.inner.closed().await;
-        Ok(format!("{}", err))
+        Ok(format!("{err}"))
     }
 
     /// Get the current round-trip time estimate in milliseconds
