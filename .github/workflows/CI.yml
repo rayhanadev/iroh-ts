@@ -31,7 +31,7 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: "latest"
+          bun-version: latest
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
@@ -56,8 +56,8 @@ jobs:
             target: x86_64-apple-darwin
             build: bun run build --target x86_64-apple-darwin
           - host: windows-latest
-            build: bun run build --target x86_64-pc-windows-msvc
             target: x86_64-pc-windows-msvc
+            build: bun run build --target x86_64-pc-windows-msvc
           - host: ubuntu-latest
             target: x86_64-unknown-linux-gnu
             build: bun run build --target x86_64-unknown-linux-gnu --use-napi-cross
@@ -67,13 +67,14 @@ jobs:
 
     name: stable - ${{ matrix.settings.target }} - bun
     runs-on: ${{ matrix.settings.host }}
+
     steps:
       - uses: actions/checkout@v6
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: "latest"
+          bun-version: latest
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -106,17 +107,11 @@ jobs:
         with:
           tool: cargo-zigbuild
 
-      - name: Setup toolchain
-        run: ${{ matrix.settings.setup }}
-        if: ${{ matrix.settings.setup }}
-        shell: bash
-
       - name: Install dependencies
         run: bun install
 
       - name: Build
         run: ${{ matrix.settings.build }}
-        shell: bash
 
       - name: Upload artifact
         uses: actions/upload-artifact@v5
@@ -129,10 +124,13 @@ jobs:
 
   publish:
     name: Publish
+    environment: publish
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
-      id-token: write # required for trusted publishing
+      id-token: write
+
     needs:
       - lint
       - build
@@ -143,7 +141,7 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: "latest"
+          bun-version: latest
 
       - name: Install dependencies
         run: bun install
@@ -161,23 +159,22 @@ jobs:
 
       - name: List packages
         run: ls -R ./npm
-        shell: bash
 
       - name: Publish (Trusted Publishers)
         run: |
-          # Enable provenance (REQUIRED)
-          npm config set provenance true
+          npm config set provenance=true
 
-          # Only publish on applicable commit messages
+          COMMIT_MSG="$(git log -1 --pretty=%B)"
           VERSION_REGEX="^[0-9]+\.[0-9]+\.[0-9]+$"
           NEXT_REGEX="^[0-9]+\.[0-9]+\.[0-9]+"
 
-          COMMIT_MSG=$(git log -1 --pretty=%B)
-
           if echo "$COMMIT_MSG" | grep -qE "$VERSION_REGEX"; then
+            echo "Publishing stable release..."
             npm publish --access public
           elif echo "$COMMIT_MSG" | grep -qE "$NEXT_REGEX"; then
+            echo "Publishing prerelease with tag 'next'..."
             npm publish --tag next --access public
           else
             echo "Not a release commit. Skipping publish."
+            exit 0
           fi
