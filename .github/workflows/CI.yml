@@ -17,6 +17,10 @@ env:
       - "**/*.gitignore"
   pull_request: null
 
+permissions:
+  contents: read
+  id-token: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -124,12 +128,7 @@ jobs:
 
   publish:
     name: Publish
-    environment: publish
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      id-token: write
 
     needs:
       - lint
@@ -142,6 +141,7 @@ jobs:
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
+          registry-url: "https://registry.npmjs.org"
 
       - name: Install dependencies
         run: bun install
@@ -161,4 +161,4 @@ jobs:
         run: ls -R ./npm
 
       - name: Publish
-        run: npm publish --access public
+        run: npm publish
